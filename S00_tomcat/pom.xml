@@ -1,0 +1,105 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ejemplo</groupId>
+	<artifactId>S00_tomcat</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<version>1.6.7</version>
+				<configuration>
+					<container>
+						<containerId>tomcat8x</containerId>
+						<!-- Servidor a instalar -->
+						<artifactInstaller>
+							<groupId>org.apache.tomcat</groupId>
+							<artifactId>tomcat</artifactId>
+							<version>8.0.51</version>
+						</artifactInstaller>
+						<!-- Dependencias para todos los proyectos del servidor y para su configuración -->
+						<dependencies>
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+							</dependency>
+						</dependencies>
+					</container>
+					<configuration>
+						<!-- Standalone: No necesita un tomcat instalado -->
+						<type>standalone</type>
+						<home>
+							${project.build.directory}/apache-tomcat-8.0.51
+						</home>
+						<properties>
+							<cargo.servlet.port>8080</cargo.servlet.port>
+							<cargo.logging>high</cargo.logging>
+							<cargo.datasource.datasource.mysql1>
+								cargo.datasource.driver=com.mysql.jdbc.Driver|
+								cargo.datasource.url=jdbc:mysql://localhost:3306/DATOS|
+								cargo.datasource.jndi=jdbc/DATOS|
+								cargo.datasource.username=alumno1|
+								cargo.datasource.password=java|
+								cargo.datasource.maxTotal=3
+								cargo.datasource.maxIdle=1
+								cargo.datasource.maxWaitMillis=10000
+							</cargo.datasource.datasource.mysql1>
+						</properties>
+
+					</configuration>
+					<deployables>
+						<deployable>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>${project.artifactId}</artifactId>
+							<type>war</type>
+							<properties>
+								<context>/myapp</context>
+							</properties>
+						</deployable>
+					</deployables>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!-- Dependencia de Mysql para el servidor desplegado con el plugin Cargo -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.46</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>
