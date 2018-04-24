@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+		
+	<bean id="unPadre" class="agenda.SuperHeroe">
+		<property name="nombre" value="SuperDaniel"/>
+		<property name="telefono" value="111222333"/>
+	</bean>
+	<bean id="unaMadre" class="agenda.Persona">
+		<property name="nombre" value="Laura"/>
+		<property name="telefono" value="444555666"/>
+	</bean>
+	<bean id="unHijo" class="agenda.Persona">
+		<property name="nombre" value="Gustavo"/>
+		<property name="telefono" value="0"/>
+	</bean>
+	<bean id="unaHija" class="agenda.Persona">
+		<property name="nombre" value="Marta"/>
+		<property name="telefono" value="676767676"/>
+	</bean>
+	<bean id="unaFamilia" class="agenda.FamiliaMapeada">
+		<property name="padre" ref="unPadre"/>
+		<property name="madre" ref="unaMadre"/>
+		<property name="hijos">
+			<map>
+				<entry>
+					<key><value>mayor</value></key>
+					<ref bean="unaHija"/>
+				</entry>
+				<entry>
+					<key><value>menor</value></key>
+					<ref bean="unHijo"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

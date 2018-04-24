@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+		
+	<!-- El contexto no va a crear un Objeto Persona
+	con su constructor sino con un método Factoría (createPepe) 
+	de la clase FactoriaDePersonas -->
+	<bean id="unaPersona" class="agenda.FactoriaDePersonas" 
+			factory-method="createPepe">
+		<constructor-arg type="java.lang.String" 
+							value="61111111"/>
+	</bean>
+</beans>

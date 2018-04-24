@@ -1,14 +1,15 @@
-# Compiled class file
-*.class
 
-# Log file
+*.class
+bin/
+target/
+.settings/
+.classpath
+.project
+.metadata/
+.recommenders/
+
 *.log
 
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
 
 # Package Files #
 *.jar

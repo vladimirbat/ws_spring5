@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+	   http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+       
+	">
+	<!-- #### areas bajo seguridad dentro de peticiones http ###### -->
+	<!-- auto-config="true" indica a spring que nos genere automáticamente
+	los formularios de acceso y cierre de session -->
+	<http use-expressions="true" auto-config="true">
+		<intercept-url pattern="/calcular.spr" access="isAuthenticated()"/>
+		<intercept-url pattern="/buscar.spr" access="isAuthenticated() and hasRole('administrador')"/> 
+		<intercept-url pattern="/**" access="permitAll"/>
+		<!-- caracteristicas del formulario de validacion de usuarios -->
+		<form-login login-page="/login.jsp"
+			authentication-failure-url="/login_err.jsp"
+			login-processing-url="/j_spring_security_check"
+			username-parameter="j_username"
+			password-parameter="j_password"/>
+		<!-- especificacion de como cerrar la sesion de usuario -->
+		<logout logout-url="/logout" invalidate-session="true"
+			logout-success-url="/adios.jsp" 
+			/>
+		<!-- url a la que redireccionar si el usuario validado, intenta 
+			acceder a un area en la que no tiene permisos -->
+		<access-denied-handler error-page="/sin_permisos.jsp"/>
+	</http>
+	
+	<!-- 	pepe/pepe	
+			ana/ana
+			rafa/rafa	
+	-->
+	<beans:bean id="codificador"  
+		class="org.springframework.security.crypto.password.StandardPasswordEncoder"/>
+	
+	<!-- #### CARACTERISTICAS DE LA VALIDACION DE USUARIOS (xml,bbdd,ldap) ##### -->
+	<authentication-manager>
+		<authentication-provider >
+			<!-- 
+			<user-service>
+				<user name="pepe" password="pepe" authorities="usuario"/>
+				<user name="ana" password="ana" authorities="usuario,administrador"/>
+			</user-service>
+			 -->
+			 
+<!-- 			 <password-encoder ref="codificador" /> -->
+<!-- 			 <user-service> -->
+<!-- 				<user name="ana" password="1ae8d4cb9c423eac548bc996959ad463df793012389eb6eca25a56fcb14d820bb1de62a64e5459c0" authorities="administrador, usuario" /> -->
+<!--                 <user name="pepe" password="54e0c51b3e37cf60b203c2c0b31191ef8bd8f7bf0a95094a453bf4874c048e4baf24e85f8122ef61" authorities="usuario" /> -->
+<!--            		<user name="rafa" password="78eaaf1e41cb110d45e7544566a592576ff6936e7cc640e16dc039a3fac6bd599a2497018f58bc5c" authorities="usuario" /> -->
+<!--             </user-service> -->
+            
+              
+             <password-encoder ref="codificador" />
+             <jdbc-user-service data-source-ref="dataSource"
+             	users-by-username-query="SELECT user_name, user_pass, true  FROM users where user_name=?"
+            	authorities-by-username-query="SELECT user_name, role_name FROM user_roles where user_name=?"
+             />
+             
+             <!-- 
+             <ldap-user-service/>
+              -->
+		</authentication-provider>
+	</authentication-manager>
+	<!--  HABILITACIÓN DE LOS ELEMENTOS DE SEGURIDAD DE MÉTODOS QUE SE DESEA EMPLEAR -->
+	<global-method-security pre-post-annotations="enabled" />
+	
+</beans:beans>
+
+
+
+
+
+
+
+

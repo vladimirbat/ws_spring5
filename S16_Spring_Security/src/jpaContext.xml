@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       	 http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       	 http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/context
+       	 http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd
+		 ">
+	<!-- ############# Para que @Autowired y @PostConstruct funcionen ############################# -->
+	<context:annotation-config />
+	<!-- Indicamos todos los paquetes en los que tiene que buscar clases con la anotación @Component -->
+	<context:component-scan base-package="persistencia,negocio" />
+	<!-- ############# Para que detecte @Transactional ############################# -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!-- ### Para inyectar el entityManager en los DAOs mediante @PersistenceContext ## ; No necesario si se emplea <context:annotation-config /> -->
+	<!-- <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" /> -->
+	<!-- ## Para que los métodos del entityManager lanzan excepciones de Spring y no de JPA ## -->
+	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	<!-- <bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect"/> -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<!-- EntityManagerFactory sobre el que gestiona las transacciones -->
+		<property name="entityManagerFactory" ref="emf" />
+	</bean>
+	<!-- ############# ENTITY MANAGER FACTORY ################ -->
+	<bean id="emf"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence_spr.xml" />
+		<!-- <property name="packagesToScan" value="persistencia" /> -->
+		<property name="persistenceUnitName" value="bancoJpa" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+			<!-- 
+				<property name="databasePlatform" value="org.hibernate.dialect.MySQL5Dialect" />
+				<property name="showSql" value="false" />
+				<property name="generateDdl" value="false" />
+				 -->
+			</bean>
+		</property> 
+		<!-- No necesario con el driver de hibernate -->
+		<!-- 
+		<property name="loadTimeWeaver">
+			<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
+		</property>
+		 -->
+	</bean>
+	<!-- ############# DATA SOURCE (POOL) ############################## -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${bbdd.driver}"/>
+		<property name="url" value="${bbdd.url}"/>
+		<property name="username" value="${bbdd.user}"/>
+		<property name="password" value="${bbdd.pass}"/>
+	</bean>
+
+	<!-- ############# ARCHIVO PROPERTIES ################################# -->
+	<context:property-placeholder location="classpath:bbdd.properties"/>
+	 
+</beans>

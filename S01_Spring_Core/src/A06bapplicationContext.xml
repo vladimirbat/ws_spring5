@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		 http://www.springframework.org/schema/beans/spring-beans.xsd">
+		 
+	<bean id="unaMadre" class="agenda.Persona">
+		<property name="nombre" value="Laura"/>
+		<property name="telefono" value="444555666"/>
+	</bean>
+	
+	<bean id="unaFamilia" class="agenda.Familia">
+		<property name="padre">
+			<bean class="agenda.Persona">
+				<property name="nombre" value="Daniel"/>
+				<property name="telefono" value="111222333"/>
+			</bean>
+		</property>
+		
+		<property name="madre" ref="unaMadre"/>
+	</bean>
+</beans>
